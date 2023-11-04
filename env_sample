@@ -1,0 +1,16 @@
+# Django secret key
+SECRET_KEY=
+DEBUG='True'
+
+# Postgres settings
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+DB_HOST='localhost'
+DB_PORT='5432'
+
+TG_ACCESS_TOKEN=
+TELEGRAM_ID=
+
+CELERY_BROKER_URL=
+CELERY_RESULT_BACKEND=
