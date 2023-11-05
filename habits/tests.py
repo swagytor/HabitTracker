@@ -1,3 +1,5 @@
+import pprint
+
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -78,8 +80,11 @@ class HabitTestCase(APITestCase):
         response = self.client.get(reverse('habit:habit-list'))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        pprint.pprint(response.json())
+
         self.assertEqual(
-            response.json(),
+            response.json()['results'],
             [
                 {
                     "place": "На улице",
@@ -154,7 +159,7 @@ class HabitTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            response.json(),
+            response.json()['results'],
             [
                 {
                     "place": "На улице",
