@@ -1,7 +1,6 @@
 import datetime
 
 from rest_framework import serializers
-
 from habits.models import Habit
 
 
@@ -22,12 +21,17 @@ class RelatedHabitAwardValidator:
         self.field_2 = field_2
 
     def __call__(self, value):
-        if value.get('pleasant_habit') == False:
-            if value.get('related_habit') and value.get('award'):
+        pleasant_habit = value.get('pleasant_habit')
+        award = value.get('award')
+        if not pleasant_habit:
+
+            if pleasant_habit and award:
                 raise serializers.ValidationError(
                     'Привычка и награда не может быть выбрана одновременно. Выберите что то одно')
-            elif value.get('related_habit') is None and value.get('award') is None:
+
+            elif pleasant_habit is None and award is None:
                 raise serializers.ValidationError('Вы должны указать награду или выбрать приятную привычку')
+
             else:
                 return True
 
