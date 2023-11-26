@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+
+  redis:
+    image: redis
+    container_name: redis_habits_tracker
+    ports:
+      - '6379'
+
+
+
+  db:
+    image: postgres
+    container_name: db_habits_tracker
+    ports:
+      - '5432'
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env.prod
+    volumes:
+      - pg_data1:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready -U postgres' ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  app:
+    build: .
+    tty: true
+    env_file:
+      - .env.prod
+    container_name: django_habits_tracker
+    ports:
+      - '8001:8000'
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "python manage.py migrate && python manage.py csu && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+
+
+  celery:
+    build: .
+    tty: true
+    container_name: celery_habits_tracker
+    command: sh -c "celery -A config worker -l info -S django"
+    depends_on:
+      redis:
+        condition: service_started
+      app:
+        condition: service_started
+
+  celery_beat:
+    build: .
+    tty: true
+    container_name: celery_beat_habits_tracker
+    command: sh -c "celery -A config beat -l info -S django"
+    depends_on:
+      redis:
+        condition: service_started
+      app:
+        condition: service_started
+
+volumes:
+  pg_data1:

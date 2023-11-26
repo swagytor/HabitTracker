@@ -6,15 +6,17 @@ from users.models import User
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
+        if not User.objects.get(email='admin@sky.pro'):
+            user = User.objects.create(
+                email='admin@sky.pro',
+                first_name='Admin',
+                last_name='SkyPro',
+                is_superuser=True,
+                is_staff=True,
+                is_active=True
+            )
 
-        user = User.objects.create(
-            email=input('email'),
-            first_name=input('first_name'),
-            last_name=input('last_name'),
-            is_superuser=bool(input('is_superuser')),
-            is_staff=bool(input('is_staff')),
-            is_active=True
-        )
+            user.set_password('12345')
+            user.save()
 
-        user.set_password('6002')
-        user.save()
+

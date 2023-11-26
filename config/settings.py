@@ -16,11 +16,12 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-ENV_ROOT = BASE_DIR / '.env'
+if os.path.exists('.env'):
+    ENV_ROOT = BASE_DIR / '.env'
+else:
+    ENV_ROOT = BASE_DIR / '.env.prod'
 
 load_dotenv(ENV_ROOT)
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -171,3 +172,11 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(minutes=1)
     }
 }
+
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+]
